@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icon.ico</file>
+    </qresource>
+    <qresource prefix="/sounds">
+        <file>Sounds/Down.wav</file>
+        <file>Sounds/Fail.wav</file>
+        <file>Sounds/Left.wav</file>
+        <file>Sounds/Right.wav</file>
+        <file>Sounds/Up.wav</file>
+    </qresource>
+    <qresource prefix="/font">
+        <file>pretty.TTF</file>
+    </qresource>
+</RCC>
