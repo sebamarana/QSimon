@@ -7,8 +7,8 @@
 
 equalityvisitor::equalityvisitor()
 {
-    equality.first = -1;
-    equality.second = -1;
+    equality.first = "";
+    equality.second = "";
 }
 
 // 1: UP, 2: RIGHT, 3: DOWN, 4: LEFT
@@ -16,48 +16,48 @@ equalityvisitor::equalityvisitor()
 
 void equalityvisitor::visitUpButton(const UpButton *up)
 {
-    if(equality.first==-1) {
-        equality.first = 1;
+    if(equality.first=="") {
+        equality.first = up->getColor();
     }
     else {
-        equality.second = 1;
+        equality.second = up->getColor();
     }
 }
 
 void equalityvisitor::visitRightButton(const RightButton *right)
 {
-    if(equality.first==-1) {
-        equality.first = 2;
+    if(equality.first=="") {
+        equality.first = right->getColor();
     }
     else {
-        equality.second = 2;
+        equality.second = right->getColor();
     }
 }
 
 void equalityvisitor::visitDownButton(const DownButton *down)
 {
-    if(equality.first==-1) {
-        equality.first = 3;
+    if(equality.first=="") {
+        equality.first = down->getColor();
     }
     else {
-        equality.second = 3;
+        equality.second = down->getColor();
     }
 }
 
 void equalityvisitor::visitLeftButton(const LeftButton *left)
 {
-    if(equality.first==-1) {
-        equality.first = 4;
+    if(equality.first=="") {
+        equality.first = left->getColor();
     }
     else {
-        equality.second = 4;
+        equality.second = left->getColor();
     }
 }
 
 bool equalityvisitor::getEqualityResults()
 {
     bool ret = (equality.first == equality.second);
-    equality.first = -1;
-    equality.second = -1;
+    equality.first = "";
+    equality.second = "";
     return ret;
 }

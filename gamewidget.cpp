@@ -112,6 +112,7 @@ void GameWidget::restartGame() //After losing
 void GameWidget::startGame() //After pressing the start button
 {
     computerTurn.start();
+    switchElapsed.restart();
 }
 
 void GameWidget::keyPressEvent(QKeyEvent *event)

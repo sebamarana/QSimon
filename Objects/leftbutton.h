@@ -8,6 +8,7 @@ class LeftButton : public Button
 public:
     LeftButton() : Button("",""){};
     LeftButton(std::string c, std::string ac) : Button(c,ac){};
+    ~LeftButton() = default;
 
     //Setter
     virtual void setDefaultColors() override
@@ -18,7 +19,7 @@ public:
     }
 
     //Visitor
-    virtual void acceptVisitor(Visitor* visitor) const override
+    void acceptVisitor(Visitor* visitor) const override
     {
         visitor->visitLeftButton(this);
     }

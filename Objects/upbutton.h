@@ -8,6 +8,7 @@ class UpButton : public Button
 public:
     UpButton() : Button("",""){};
     UpButton(std::string c, std::string ac) : Button(c,ac){};
+    ~UpButton() = default;
 
     //Setter
     virtual void setDefaultColors() override
@@ -18,7 +19,7 @@ public:
     }
 
     //Visitor
-    virtual void acceptVisitor(Visitor* visitor) const override
+    void acceptVisitor(Visitor* visitor) const override
     {
         visitor->visitUpButton(this);
     }

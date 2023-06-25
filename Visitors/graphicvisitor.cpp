@@ -5,7 +5,7 @@
 #include "Objects/leftbutton.h"
 
 GraphicVisitor::GraphicVisitor() :
-    RESIZE(1.2)
+    RESIZE(1)
 {
     //player.setVolume(0.7);
 }

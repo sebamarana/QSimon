@@ -8,6 +8,7 @@ class DownButton : public Button
 public:
     DownButton() : Button("",""){};
     DownButton(std::string c, std::string ac) : Button(c,ac){};
+    ~DownButton() = default;
 
     //Setter
     virtual void setDefaultColors() override
@@ -18,7 +19,7 @@ public:
     }
 
     //Visitor
-    virtual void acceptVisitor(Visitor* visitor) const override
+    void acceptVisitor(Visitor* visitor) const override
     {
         visitor->visitDownButton(this);
     }
