@@ -31,9 +31,6 @@ public:
     void setSound(std::string s){sound_addr = s;};
     void setPressed(bool newPressed){ pressed = newPressed;}
 
-    //Operator
-    //virtual bool operator==(Button &btn) const = 0;
-
     //Virtual Visitor
     virtual void acceptVisitor(Visitor* visitor) const = 0;
 

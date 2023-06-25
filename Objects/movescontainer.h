@@ -2,6 +2,7 @@
 #define MOVESCONTAINER_H
 
 #include "button.h"
+#include "Visitors/equalityvisitor.h"
 
 class MoveHolder {
 public:
@@ -14,10 +15,10 @@ class MovesContainer{
 private:
     MoveHolder* head;
     MoveHolder* tail;
+
+    equalityvisitor equal;
 public:
     MovesContainer() : head(nullptr), tail(nullptr){};
-
-    //TODO: Implement Methods
     void push_back(Button &button); //Insert an object from the back
     void clean(); //Deletes all object in container
     Button* getLast(); //Returns last obj in container

@@ -7,7 +7,7 @@
 GraphicVisitor::GraphicVisitor() :
     RESIZE(1.2)
 {
-
+    player.setVolume(0.7);
 }
 
 void GraphicVisitor::render(std::string upButtonColor, std::string rightButtonColor, std::string downButtonColor, std::string leftButtonColor) {
@@ -52,6 +52,12 @@ void GraphicVisitor::render(std::string upButtonColor, std::string rightButtonCo
 
 QGraphicsItemGroup* GraphicVisitor::getGroup(){
     return &group;
+}
+
+void GraphicVisitor::playFailSound()
+{
+    player.setSource(QUrl::fromLocalFile(":/sounds/Sounds/Fail.wav"));
+    player.play();
 }
 
 void GraphicVisitor::visitUpButton(const UpButton* up){

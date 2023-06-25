@@ -1,4 +1,4 @@
-QT       += core gui multimedia
+QT+= core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     Objects/button.cpp \
     Objects/movescontainer.cpp \
+    Visitors/equalityvisitor.cpp \
     Visitors/graphicvisitor.cpp \
     gamewidget.cpp \
     main.cpp \

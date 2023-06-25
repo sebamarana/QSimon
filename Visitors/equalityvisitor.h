@@ -6,13 +6,20 @@ class RightButton;
 class LeftButton;
 class DownButton;
 
-class EqualityVisitor
+#include "Visitors/visitor.h"
+#include <utility>
+
+class equalityvisitor : public Visitor
 {
 public:
-    virtual void visitUpButton(const UpButton* up) = 0;
-    virtual void visitRightButton(const RightButton* right) = 0;
-    virtual void visitDownButton(const DownButton* down) = 0;
-    virtual void visitLeftButton(const LeftButton* left) = 0;
+    equalityvisitor();
+    void visitUpButton(const UpButton* up);
+    void visitRightButton(const RightButton* right);
+    void visitDownButton(const DownButton* down);
+    void visitLeftButton(const LeftButton* left);
+    bool getEqualityResults();
+private:
+    std::pair<int,int> equality;
 };
 
 #endif // EQUALITYVISITOR_H

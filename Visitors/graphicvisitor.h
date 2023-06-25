@@ -24,6 +24,7 @@ public:
     void visitDownButton(const DownButton* down);
     void visitLeftButton(const LeftButton* left);
     QGraphicsItemGroup * getGroup();
+    void playFailSound();
 private:
     QGraphicsPathItem bUp,bRight,bDown,bLeft;
     QGraphicsItemGroup group;

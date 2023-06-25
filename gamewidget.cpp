@@ -1,26 +1,36 @@
 #include "gamewidget.h"
+#include "mainwindow.h"
 #include <QDebug>
+#include <QCoreApplication>
+
 
 GameWidget::GameWidget(QWidget *parent) :
     QGraphicsScene(parent),
-    btnAnimTime(600)
+    btnAnimTime(400),
+    computerAnimSpeed(700)
 {
     this->setFocus();
-    Turn.setInterval(1000);
-    playerClick.setInterval(1); // TODO: Possibilmente sistemare la nomenclatura
 
-    connect(&playerClick, &QTimer::timeout, this, &GameWidget::timer_out);
-    connect(&Turn, &QTimer::timeout, this, &GameWidget::timer_out);
+    computerTurn.setInterval(computerAnimSpeed);
+    playerTurn.setInterval(1);
+
+    random.seed(QDateTime::currentDateTime().time().msec()%1000); //For the random
+
+    connect(&playerTurn, &QTimer::timeout, this, &GameWidget::timer_out);
+    connect(&computerTurn, &QTimer::timeout, this, &GameWidget::timer_out);
+    connect(this, &GameWidget::updatePoints, qobject_cast<MainWindow*>(this->parent()), &MainWindow::upPoints);
+    connect(this, &GameWidget::updateRecord, qobject_cast<MainWindow*>(this->parent()), &MainWindow::upRecord);
 
     loadGame();
 }
 
 GameWidget::~GameWidget()
 {
-
+    player.clean();
+    computer.clean();
 }
 
-void GameWidget::loadGame() //Al caricamento dell'applicazione
+void GameWidget::loadGame() //On the app load
 {
     //Set Default colors of buttons
     up.setDefaultColors();
@@ -45,19 +55,63 @@ void GameWidget::loadGame() //Al caricamento dell'applicazione
     this->addItem(visitor.getGroup());
 
     //Turns
-    playerTurn = false;
+    isPlayerTurn = false;
+    movesDone = 0;
+
+    //Computer
+    generated = false;
+    compIterator = 0;
+    compAnimElapsed.start();
+
+    //Save    
+    QSettings set("./conf.ini", QSettings::IniFormat);
+
+    //Points
+    points = 0;
+
+    if(set.contains("record")) {
+        record = set.value("record",0).toInt();
+    }
+    else {
+        set.setValue("record",0);
+        record = set.value("record",0).toInt();
+    }
+    set.sync();
+    emit updateRecord(record);
 }
 
-void GameWidget::startGame() //Dopo aver premuto start
+void GameWidget::restartGame() //After losing
 {
-    //Turn.start();
-    playerClick.start();
-    playerTurn = true;
+    //MovesContainers
+    player.clean();
+    computer.clean();
 
-    computer.push_back(up);
-    computer.push_back(up);
-    computer.push_back(up);
-    computer.push_back(left);
+    //Points
+    points= 0;
+    emit updatePoints(points);
+
+    //Turns
+    isPlayerTurn=false;
+
+    //Computer
+    generated = false;
+    compIterator = 0;
+
+    //Timers
+    playerTurn.stop();
+    computerTurn.setInterval(computerAnimSpeed);
+    computerTurn.start();
+
+    //Elapsed
+    switchElapsed.restart();
+
+    //Play Fail Sound
+    visitor.playFailSound();
+}
+
+void GameWidget::startGame() //After pressing the start button
+{
+    computerTurn.start();
 }
 
 void GameWidget::keyPressEvent(QKeyEvent *event)
@@ -65,7 +119,7 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
     if (event->isAutoRepeat()) {
             return;
         }
-    if(playerTurn) {
+    if(isPlayerTurn) {
         switch (event->key()) {
         case Qt::Key_W:
         case Qt::Key_Up:
@@ -81,8 +135,9 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Left:
             // Left
             if(Left_Elapsed.elapsed()>=100){
-                left.setPressed(true);
-                left.acceptVisitor(&visitor);
+                player.push_back(left);
+                player.getLast()->setPressed(true);
+                player.getLast()->acceptVisitor(&visitor);
                 Left_Elapsed.restart();
             }
             break;
@@ -90,8 +145,9 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Down:
             // Down
             if(Down_Elapsed.elapsed()>=100){
-                down.setPressed(true);
-                down.acceptVisitor(&visitor);
+                player.push_back(down);
+                player.getLast()->setPressed(true);
+                player.getLast()->acceptVisitor(&visitor);
                 Down_Elapsed.restart();
             }
             break;
@@ -99,8 +155,9 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Right:
             // Right
             if(Right_Elapsed.elapsed()>=100){
-                right.setPressed(true);
-                right.acceptVisitor(&visitor);
+                player.push_back(right);
+                player.getLast()->setPressed(true);
+                player.getLast()->acceptVisitor(&visitor);
                 Right_Elapsed.restart();
             }
             break;
@@ -108,20 +165,59 @@ void GameWidget::keyPressEvent(QKeyEvent *event)
             QGraphicsScene::keyPressEvent(event);
             break;
         }
-        //TODO: Magari aggiungere un check degli input qui per dire se si è corretti o no
-        if(player==computer) {
-            qDebug()<<"ok!";
-        }
-        else {
-            qDebug()<<"You are wrong boy!";
-            player.clean();
-        }
+        checkMoves();
     }
 }
 
-void GameWidget::timer_out()
+void GameWidget::resetBtns()
 {
-    if(playerTurn){
+    up.setPressed(false);
+    up.acceptVisitor(&visitor);
+    left.setPressed(false);
+    left.acceptVisitor(&visitor);
+    down.setPressed(false);
+    down.acceptVisitor(&visitor);
+    right.setPressed(false);
+    right.acceptVisitor(&visitor);
+}
+
+void GameWidget::checkMoves()
+{
+    QSettings set("./conf.ini", QSettings::IniFormat);
+    emit updateRecord(record);
+    if(player==computer) { //MOVE IS OK
+        if(movesDone+1<compIterator) {
+            movesDone++;
+        }
+        else { //SEQUENCE COMPLETE
+            compIterator = 0;
+            movesDone = 0;
+            points++;
+            //Update Label
+            emit updatePoints(points);
+            if(points>record) {
+                record = points;
+                //Save Value
+                set.setValue("record",record);
+                set.sync();
+                //Update Label
+                emit updateRecord(record);
+            }
+            playerTurn.stop();
+            player.clean();
+            isPlayerTurn = false;
+            switchElapsed.restart();
+            switchElapsed.start();
+            computerTurn.start();
+        }
+    }
+    else { //GAME OVER
+        restartGame();
+    }
+}
+
+void GameWidget::timer_out() {
+    if(isPlayerTurn || switchElapsed.elapsed()<=1000){ //Player
         if(Up_Elapsed.elapsed()>=btnAnimTime){
             up.setPressed(false);
             up.acceptVisitor(&visitor);
@@ -137,6 +233,48 @@ void GameWidget::timer_out()
         if(Right_Elapsed.elapsed()>=btnAnimTime){
             right.setPressed(false);
             right.acceptVisitor(&visitor);
+        }
+    }
+    else if(switchElapsed.elapsed()>=1000){ //Computer, waits one second before starting the new sequence
+        if (!generated) {
+            switch (QRandomGenerator::global()->bounded(0,4)) { //Makes a random move every new turn
+            case 0:
+                computer.push_back(up);
+                break;
+            case 1:
+                computer.push_back(right);
+                break;
+            case 2:
+                computer.push_back(down);
+                break;
+            case 3:
+                computer.push_back(left);
+                break;
+
+            default:
+                break;
+            }
+            resetBtns();
+            generated = true;
+        }
+        if(computer.findByPos(compIterator)!=nullptr) {
+            if(compIterator!=0) { //Clears turned on buttons
+                computer.findByPos(compIterator-1)->setPressed(false);
+                computer.findByPos(compIterator-1)->acceptVisitor(&visitor);
+            }
+            if(compAnimElapsed.elapsed()>=computerTurn.interval()*2) {//Gives some more time between consequential press, making it more clear to follow
+                computer.findByPos(compIterator)->setPressed(true);
+                computer.findByPos(compIterator)->acceptVisitor(&visitor);
+                compIterator++;
+                compAnimElapsed.restart();
+            }
+        }
+        else {
+            isPlayerTurn = true;
+            generated = false;
+            computerTurn.stop();
+            computerTurn.setInterval((computerTurn.interval()-computerTurn.interval()/100*10)); //Decrement Interval making it more difficult to follow
+            playerTurn.start();
         }
     }
 }

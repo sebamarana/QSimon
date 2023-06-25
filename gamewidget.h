@@ -6,12 +6,13 @@
 #include <QGraphicsPathItem>
 #include <QPainterPath>
 #include <QPainter>
-#include <QLabel>
 #include <QPushButton>
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QSoundEffect>
 #include <QRandomGenerator>
+#include <QDateTime>
+#include <QSettings>
 #include "Objects/movescontainer.h"
 #include "Objects/upbutton.h"
 #include "Objects/rightbutton.h"
@@ -31,13 +32,15 @@ public slots:
 
 private:
     //QObjects
-    QLabel points;
     QGraphicsPathItem B_Up,B_Down,B_Left,B_Right;
     QPainter painter;
     QPainterPath path;
-    QTimer Turn;
-    QTimer playerClick;
+    QTimer computerTurn;
+    QTimer playerTurn;
     QElapsedTimer Up_Elapsed, Left_Elapsed, Down_Elapsed, Right_Elapsed;
+    QElapsedTimer switchElapsed;
+    QElapsedTimer compAnimElapsed;
+    QRandomGenerator random;
 
     //Objects
     UpButton up;
@@ -52,21 +55,32 @@ private:
     //Visitor
     GraphicVisitor visitor;
 
+    //Computer Utils
+    bool generated;
+    unsigned int compIterator;
+
     //Utils
-    bool playerTurn;
+    bool isPlayerTurn;
     void keyPressEvent(QKeyEvent* event) override;
+    unsigned int movesDone;
+    unsigned int points;
+    unsigned int record;
+    void resetBtns();
+    void checkMoves();
 
     //Settings
     const unsigned int btnAnimTime;
+    const unsigned int computerAnimSpeed;
 
     //Main Functions
     void loadGame();
+    void restartGame();
 
+signals:
+    void updatePoints(unsigned int p);
+    void updateRecord(unsigned int r);
 private slots:
     void timer_out();
-
-
-
 };
 
 #endif // GAMEWIDGET_H
