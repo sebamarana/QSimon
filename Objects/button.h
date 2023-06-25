@@ -10,7 +10,7 @@ private:
     bool pressed; //Indica se il pulsante è stato premuto
     std::string sound_addr; //Indirizzo locale del suono da riprodurre
 
-    //Colori esadecimali
+    //Colors
     std::string active_color;
     std::string color;
 public:

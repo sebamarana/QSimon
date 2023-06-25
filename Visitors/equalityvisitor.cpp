@@ -11,9 +11,6 @@ equalityvisitor::equalityvisitor()
     equality.second = "";
 }
 
-// 1: UP, 2: RIGHT, 3: DOWN, 4: LEFT
-//TODO: Sistemare i warning!
-
 void equalityvisitor::visitUpButton(const UpButton *up)
 {
     if(equality.first=="") {
