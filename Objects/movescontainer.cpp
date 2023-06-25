@@ -20,7 +20,6 @@ void MovesContainer::clean()
     MoveHolder* current = head;
     while (current != nullptr) {
         MoveHolder* next = current->next;
-        //delete current->button;
         delete current;
         current = next;
     }

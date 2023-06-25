@@ -9,7 +9,6 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QElapsedTimer>
-#include <QSoundEffect>
 #include <QRandomGenerator>
 #include <QDateTime>
 #include <QSettings>
