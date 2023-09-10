@@ -7,7 +7,7 @@
 GraphicVisitor::GraphicVisitor() :
     RESIZE(1)
 {
-    //player.setVolume(0.7);
+    player.setVolume(0.7);
 }
 
 void GraphicVisitor::render(std::string upButtonColor, std::string rightButtonColor, std::string downButtonColor, std::string leftButtonColor) {
@@ -44,8 +44,6 @@ void GraphicVisitor::render(std::string upButtonColor, std::string rightButtonCo
     bRight.setPath(path);
     bRight.setBrush(QBrush(QColor(QString::fromStdString(rightButtonColor)).rgb()));
 
-    //TODO: Rendere cliccabili i punti
-
     group.addToGroup(&bUp);
     group.addToGroup(&bRight);
     group.addToGroup(&bDown);
@@ -58,14 +56,14 @@ QGraphicsItemGroup* GraphicVisitor::getGroup(){
 
 void GraphicVisitor::playFailSound()
 {
-    //player.setSource(QUrl::fromLocalFile(":/sounds/Sounds/Fail.wav"));
-    //player.play();
+    player.setSource(QUrl::fromLocalFile(":/sounds/Sounds/Fail.wav"));
+    player.play();
 }
 
 void GraphicVisitor::visitUpButton(const UpButton* up){
     if(up->isPressed()){
-        //player.setSource(QUrl::fromLocalFile(":/sounds/Sounds/Up.wav"));//QUrl::fromLocalFile(QString::fromStdString(up->getSoundAddr())));
-        //player.play();
+        player.setSource(QUrl::fromLocalFile(":/sounds/Sounds/Up.wav"));//QUrl::fromLocalFile(QString::fromStdString(up->getSoundAddr())));
+        player.play();
         bUp.setBrush(QBrush(QColor(QString::fromStdString(up->getActiveColor())).rgb()));
     }
     else
@@ -76,8 +74,8 @@ void GraphicVisitor::visitUpButton(const UpButton* up){
 
 void GraphicVisitor::visitRightButton(const RightButton* right){
     if(right->isPressed()){
-        //player.setSource(QUrl::fromLocalFile(QString::fromStdString(right->getSoundAddr())));
-        //player.play();
+        player.setSource(QUrl::fromLocalFile(QString::fromStdString(right->getSoundAddr())));
+        player.play();
         bRight.setBrush(QBrush(QColor(QString::fromStdString(right->getActiveColor())).rgb()));
     }
     else
@@ -88,8 +86,8 @@ void GraphicVisitor::visitRightButton(const RightButton* right){
 
 void GraphicVisitor::visitDownButton(const DownButton* down){
     if(down->isPressed()){
-        //player.setSource(QUrl::fromLocalFile(QString::fromStdString(down->getSoundAddr())));
-        //player.play();
+        player.setSource(QUrl::fromLocalFile(QString::fromStdString(down->getSoundAddr())));
+        player.play();
         bDown.setBrush(QBrush(QColor(QString::fromStdString(down->getActiveColor())).rgb()));
     }
     else
@@ -100,8 +98,8 @@ void GraphicVisitor::visitDownButton(const DownButton* down){
 
 void GraphicVisitor::visitLeftButton(const LeftButton* left){
     if(left->isPressed()){
-        //player.setSource(QUrl::fromLocalFile(QString::fromStdString(left->getSoundAddr())));
-        //player.play();
+        player.setSource(QUrl::fromLocalFile(QString::fromStdString(left->getSoundAddr())));
+        player.play();
         bLeft.setBrush(QBrush(QColor(QString::fromStdString(left->getActiveColor())).rgb()));
     }
     else

@@ -12,7 +12,7 @@ class DownButton;
 #include <QPainterPath>
 #include <string>
 #include <QBrush>
-//#include <QSoundEffect>
+#include <QSoundEffect>
 #include <QUrl>
 
 class GraphicVisitor : public Visitor
@@ -30,7 +30,7 @@ private:
     QGraphicsPathItem bUp,bRight,bDown,bLeft;
     QGraphicsItemGroup group;
     QPainterPath path;
-    //QSoundEffect player;
+    QSoundEffect player;
     const qreal RESIZE;
 
 };

@@ -92,6 +92,7 @@ void GameHandler::setPlayerMove(unsigned int mov)
                 if(points>=record)
                 {
                     //Save Value
+                    record = points;
                     set.setValue("record",record);
                     set.sync();
                 }

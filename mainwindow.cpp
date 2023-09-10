@@ -1,9 +1,5 @@
 #include "mainwindow.h"
 #include <QFontDatabase>
-#include <QDebug>
-
-
-//TODO: Do a menu with options and a walktrough
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow{parent},

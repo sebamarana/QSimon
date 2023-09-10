@@ -4,7 +4,6 @@
 #include <QCoreApplication>
 
 //View
-//TODO: Aggiungere la modifica dei pulsanti ed alcune specifiche dalle impostazioni
 
 GameWidget::GameWidget(MovesContainer mov, int diff, QWidget *parent) :
     QGraphicsView(parent),
@@ -99,6 +98,7 @@ void GameWidget::restartGame() //After losing
 
     //Points
     emit updatePoints(Simon.getPoints());
+    emit updateRecord(Simon.getRecord());
 
     //Timers
     playerTurn.stop();
@@ -233,6 +233,7 @@ void GameWidget::checkMove()
         computerTurn.start();
         computerAnimEnd = false;
         emit updatePoints(Simon.getPoints());
+        emit updateRecord(Simon.getRecord());
     }
 }
 
