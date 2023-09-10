@@ -7,7 +7,11 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QStackedWidget>
+#include <QApplication>
 #include "gamewidget.h"
+#include "optionswidget.h"
+#include "helpwidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -18,20 +22,39 @@ public:
     ~MainWindow();
 
 private:
-    GameWidget * game;
-    QGraphicsView *view;
+    QStackedWidget WidgetStack;
 
-    QVBoxLayout layout;
-    QHBoxLayout buttonLayout;
+    // Widget for the GameWidget
+    GameWidget * game;
+
+    // Widget for the Menu
+    QHBoxLayout buttonsHLayout;
+    QVBoxLayout buttonsVLayout;
+
+    QWidget MainMenu;
+    QLabel title;
 
     QPushButton startButton;
+    QPushButton optionsButton;
+    QPushButton helpButton;
+    QPushButton exitButton;
+    //--------------------------------------
 
-    QLabel pointsLabel,recordLabel;
+    //Options
+    OptionsWidget Options;
+    //--------------------------------------
+
+    //Help
+    HelpWidget Help;
+    //--------------------------------------
+
 private slots:
     void startGame();
+    void setOptions();
+    void setHelp();
 public slots:
-    void upPoints(unsigned int pts);
-    void upRecord(unsigned int rec);
+    void showMenu();
+
 
 };
 #endif // MAINWINDOW_H

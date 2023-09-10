@@ -1,4 +1,8 @@
 #include "movescontainer.h"
+#include "Objects/upbutton.h"
+#include "Objects/downbutton.h"
+#include "Objects/rightbutton.h"
+#include "Objects/leftbutton.h"
 #include <typeinfo>
 
 void MovesContainer::push_back(Button &button)
@@ -58,4 +62,82 @@ Button *MovesContainer::findByPos(const int &pos)
         }
     }
     return current->button;
+}
+
+Button *MovesContainer::findByType(const unsigned int mov)
+{
+    MoveHolder* current = head;
+    switch (static_cast<Moves>(mov)) {
+    case Moves::Up:
+        while (current!=nullptr) {
+            UpButton * up = dynamic_cast<UpButton*>(current->button);
+            if(up!=nullptr)
+            {
+                return up;
+            }
+            else if(current->next!=nullptr){
+                current = current->next;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+        break;
+    case Moves::Right:
+        while (current!=nullptr) {
+            RightButton * right = dynamic_cast<RightButton*>(current->button);
+            if(right!=nullptr)
+            {
+                return right;
+            }
+            else if(current->next!=nullptr){
+                current = current->next;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+        break;
+    case Moves::Left:
+        while (current!=nullptr) {
+            LeftButton * left = dynamic_cast<LeftButton*>(current->button);
+            if(left!=nullptr)
+            {
+                return left;
+            }
+            else if(current->next!=nullptr){
+                current = current->next;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+        break;
+    case Moves::Down:
+        while (current!=nullptr) {
+            DownButton * down = dynamic_cast<DownButton*>(current->button);
+            if(down!=nullptr)
+            {
+                return down;
+            }
+            else if(current->next!=nullptr){
+                current = current->next;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        return nullptr;
+        break;
+    default:
+        return nullptr;
+        break;
+    }
 }

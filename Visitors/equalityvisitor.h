@@ -15,6 +15,7 @@ class equalityvisitor : public Visitor
 {
 public:
     equalityvisitor();
+    ~equalityvisitor() = default;
     void visitUpButton(const UpButton* up);
     void visitRightButton(const RightButton* right);
     void visitDownButton(const DownButton* down);

@@ -12,24 +12,37 @@
 #include <QRandomGenerator>
 #include <QDateTime>
 #include <QSettings>
+#include <QMessageBox>
+#include <QGraphicsView>
+#include <QLabel>
+#include <QFontDatabase>
+#include <QVBoxLayout>
 #include "Objects/movescontainer.h"
-#include "Objects/upbutton.h"
-#include "Objects/rightbutton.h"
-#include "Objects/downbutton.h"
-#include "Objects/leftbutton.h"
 #include "Visitors/graphicvisitor.h"
+#include "gamehandler.h"
 
-class GameWidget : public QGraphicsScene
+
+
+class GameWidget : public QGraphicsView
 {
     Q_OBJECT
 public:
-    GameWidget(QWidget *parent = nullptr);
+    GameWidget(MovesContainer mov, int diff, QWidget *parent = nullptr);
     ~GameWidget();
 
 public slots:
     void startGame();
 
 private:
+    //Scene
+    QGraphicsScene gameScene;
+
+    //Logic Handler
+    GameHandler Simon;
+
+    //MovesContainer
+    MovesContainer Buttons;
+
     //QObjects
     QGraphicsPathItem B_Up,B_Down,B_Left,B_Right;
     QPainter painter;
@@ -39,33 +52,25 @@ private:
     QElapsedTimer Up_Elapsed, Left_Elapsed, Down_Elapsed, Right_Elapsed;
     QElapsedTimer switchElapsed;
     QElapsedTimer compAnimElapsed;
-    QRandomGenerator random;
-
-    //Objects
-    UpButton up;
-    DownButton down;
-    RightButton right;
-    LeftButton left;
-
-    //Objects Containers
-    MovesContainer player;
-    MovesContainer computer;
 
     //Visitor
     GraphicVisitor visitor;
 
-    //Computer Utils
-    bool generated;
-    unsigned int compIterator;
+    //Labels
+    QLabel pointsLabel, recordLabel;
+
+    //Messagebox
+    QMessageBox win, lose, play_again;
+
+    //Layout
+    QVBoxLayout layout;
 
     //Utils
-    bool isPlayerTurn;
     void keyPressEvent(QKeyEvent* event) override;
-    unsigned int movesDone;
-    unsigned int points;
-    unsigned int record;
     void resetBtns();
-    void checkMoves();
+    void checkMove();
+    unsigned int computerIterator;
+    bool computerAnimEnd;
 
     //Settings
     const unsigned int btnAnimTime;
@@ -74,12 +79,16 @@ private:
     //Main Functions
     void loadGame();
     void restartGame();
+    void playAgain();
 
 signals:
     void updatePoints(unsigned int p);
     void updateRecord(unsigned int r);
+    void backToMenu();
 private slots:
     void timer_out();
+    void upPoints(unsigned int pts);
+    void upRecord(unsigned int rec);
 };
 
 #endif // GAMEWIDGET_H

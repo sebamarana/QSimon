@@ -44,6 +44,8 @@ void GraphicVisitor::render(std::string upButtonColor, std::string rightButtonCo
     bRight.setPath(path);
     bRight.setBrush(QBrush(QColor(QString::fromStdString(rightButtonColor)).rgb()));
 
+    //TODO: Rendere cliccabili i punti
+
     group.addToGroup(&bUp);
     group.addToGroup(&bRight);
     group.addToGroup(&bDown);

@@ -13,9 +13,12 @@ SOURCES += \
     Objects/movescontainer.cpp \
     Visitors/equalityvisitor.cpp \
     Visitors/graphicvisitor.cpp \
+    gamehandler.cpp \
     gamewidget.cpp \
+    helpwidget.cpp \
     main.cpp \
     mainwindow.cpp \
+    optionswidget.cpp
 
 HEADERS += \
     Objects/button.h \
@@ -27,8 +30,11 @@ HEADERS += \
     Visitors/equalityvisitor.h \
     Visitors/graphicvisitor.h \
     Visitors/visitor.h \
+    gamehandler.h \
     gamewidget.h \
+    helpwidget.h \
     mainwindow.h \
+    optionswidget.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -2,12 +2,24 @@
 #include <QFontDatabase>
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+
+//TODO: Do a menu with options and a walktrough
+
+MainWindow::MainWindow(QWidget *parent):
+    QMainWindow{parent},
+    Options{this},
+    Help{this}
 {
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    this->setFixedSize(500,500);
+    this->setMinimumSize(500,500);
     this->setStyleSheet("background-color: black;");
+
+    //Widget Stack
+    WidgetStack.addWidget(&MainMenu);
+    WidgetStack.addWidget(&Options);
+    WidgetStack.addWidget(&Help);
+    this->setCentralWidget(&WidgetStack);
+    //-----------------------------
 
 
     //Font Settings
@@ -16,69 +28,89 @@ MainWindow::MainWindow(QWidget *parent)
     QFont pretty(family,30);
     //-----------------------------
 
-    //Button Settings
+    //Title Settings
+    title.setText("QSimon");
+    title.setFont(QFont(pretty));
+    title.setStyleSheet("color: white; font-size:55px;");
+    //-----------------------------
+
+    //Buttons Settings
     startButton.setText("START");
     startButton.setFont(QFont(pretty));
-    startButton.setStyleSheet("QPushButton {color: black; font-size:25px; background:rgba(255, 255, 255, 150);} QPushButton:hover{background:rgba(255, 255, 255, 230);}");
+    startButton.setStyleSheet("QPushButton {color: black; font-size:25px; background:rgba(255,0,0,1);} QPushButton:hover{background:rgba(139,0,0,1);}");
     startButton.setFocus();
     startButton.setCursor(Qt::PointingHandCursor);
     startButton.setFixedSize(200, 50);
-    //-----------------------------
 
-    //Label Settings
-    pointsLabel.setText("Points: 0");
-    pointsLabel.setStyleSheet("color: white; font-size:25px; background:rgba(255, 255, 255, 0)");
-    pointsLabel.setFont(QFont(pretty));
+    optionsButton.setText("OPTIONS");
+    optionsButton.setFont(QFont(pretty));
+    optionsButton.setStyleSheet("QPushButton {color: black; font-size:25px; background:rgba(255,255,0,1.000);} QPushButton:hover{background:rgba(128,128,0,1.000);}");
+    optionsButton.setCursor(Qt::PointingHandCursor);
+    optionsButton.setFixedSize(200, 50);
 
-    recordLabel.setText("Record: 0");
-    recordLabel.setStyleSheet("color: white; font-size:25px; background:rgba(255, 255, 255, 0)");
-    recordLabel.setFont(QFont(pretty));
-    //-----------------------------
+    helpButton.setText("HELP");
+    helpButton.setFont(QFont(pretty));
+    helpButton.setStyleSheet("QPushButton {color: black; font-size:25px; background:rgba(50,205,50,1.000);} QPushButton:hover{background:rgba(0,100,0,1.000);}");
+    helpButton.setCursor(Qt::PointingHandCursor);
+    helpButton.setFixedSize(200, 50);
 
-    //View and GameWidget creation
-    game = new GameWidget(this);
-    view = new QGraphicsView(this);
-    view->setScene(game);
-    view->setFrameStyle(QFrame::NoFrame);
-    this->setCentralWidget(view);
+    exitButton.setText("EXIT");
+    exitButton.setFont(QFont(pretty));
+    exitButton.setStyleSheet("QPushButton {color: black; font-size:25px; background:rgba(65,105,225,1.000);} QPushButton:hover{background:rgba(0,0,139,1.000);}");
+    exitButton.setCursor(Qt::PointingHandCursor);
+    exitButton.setFixedSize(200, 50);
     //-----------------------------
 
     //Layout settings
-    buttonLayout.addStretch(0);
-    buttonLayout.addWidget(&startButton);
-    buttonLayout.addStretch(0);
+    buttonsVLayout.addWidget(&title, 0, Qt::AlignCenter);
+    buttonsVLayout.addWidget(&startButton, 0, Qt::AlignCenter);
+    buttonsVLayout.addWidget(&optionsButton, 0, Qt::AlignCenter);
+    buttonsVLayout.addWidget(&helpButton, 0, Qt::AlignCenter);
+    buttonsVLayout.addWidget(&exitButton, 0, Qt::AlignCenter);
 
-    layout.addWidget(&recordLabel,0,Qt::AlignTop);
-    layout.addLayout(&buttonLayout);
-    layout.addWidget(&pointsLabel,0,Qt::AlignBottom);
-    view->setLayout(&layout);
+    buttonsVLayout.setAlignment(Qt::AlignCenter);
+    buttonsVLayout.setSpacing(25);
+
+    MainMenu.setLayout(&buttonsVLayout);
+    WidgetStack.setCurrentWidget(&MainMenu);
     //------------------------------
 
     connect(&startButton,SIGNAL(pressed()),this,SLOT(startGame()));
+    connect(&optionsButton,SIGNAL(pressed()),this,SLOT(setOptions()));
+    connect(&helpButton,SIGNAL(pressed()),this,SLOT(setHelp()));
+    connect(&exitButton,SIGNAL(pressed()),this,SLOT(close()));
 }
 
 MainWindow::~MainWindow()
 {
     delete game;
-    delete view;
 }
 
 void MainWindow::startGame()
 {
-    startButton.hide();
+    game = new GameWidget(Options.getButtons(),Options.getDifficulty(),this);
+    WidgetStack.addWidget(game);
+    WidgetStack.setCurrentWidget(game);
+    game->setFrameStyle(QFrame::NoFrame);
     game->setFocus();
     game->startGame();
 }
 
-void MainWindow::upPoints(unsigned int pts)
+void MainWindow::setOptions()
 {
-    std::string points = std::to_string(pts);
-    pointsLabel.setText(QString::fromStdString("Points: "+points));
+    WidgetStack.setCurrentWidget(&Options);
 }
 
-void MainWindow::upRecord(unsigned int rec)
+void MainWindow::setHelp()
 {
-    std::string record = std::to_string(rec);
-    recordLabel.setText(QString::fromStdString("Record: "+record));
+    WidgetStack.setCurrentWidget(&Help);
+}
+
+
+void MainWindow::showMenu()
+{
+    //game->setScene(nullptr);
+    WidgetStack.setCurrentWidget(&MainMenu);
+    return;
 }
 
