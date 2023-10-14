@@ -12,6 +12,7 @@ GameWidget::GameWidget(MovesContainer mov, int diff, QWidget *parent) :
     computerAnimSpeed(diff)
 {
     this->setFocus();
+    this->setRenderHint(QPainter::Antialiasing);
 
     computerTurn.setInterval(computerAnimSpeed); // TO ADD DIFFICULTY
     playerTurn.setInterval(1);
